@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8" />
+<title>{{ title }}</title>
+</head>
+<body>
+<div style="background-color: #F0F0F0;">
+	<div style="background-color: #D2F0F0; padding-top: 10px; padding-bottom: 10px;">
+		<p align="center" style="font-size: 36pt; margin-top: 5px; margin-bottom: 5px;"><a href="/">Парсер интернет-магазинов</a></p>
+		<p align="center" style="font-size: 10pt;">(цены указаны в Российских рублях)</p>
+		<hr/>
+		<table>
+		<tr>
+		<td><div style="font-size: 18pt;">Интернет-магазины:</div></td>
+		<td>
+		{% if g_dictMarkets %}
+		
+			{% for key, value in g_dictMarkets.items %}
+				{% if forloop.counter > 1 %}
+					 | 
+				{% endif %}
+				<a href="{{ value.link }}">{{ value.name }}</a> 
+			{% endfor %}
+		{% endif %}
+		</td>
+		</tr>
+		</table>
+		<table>
+		<tr>
+		<td><div style="font-size: 18pt;">Товары:</div></td>
+		<td>
+		{% if g_dictObjects %}
+			{% for key, value in g_dictObjects.items %}
+				{% if forloop.counter > 1 %}
+					 | 
+				{% endif %}
+				<a href="/{{ key }}/">{{ value.text }}</a> 
+			{% endfor %}
+		{% endif %}
+		</td>
+		</tr>
+		</table>
+		<div style="position: relative; float: right; padding: 10px">
+			<form method="post" action="/">
+				{% csrf_token %}
+				<input type="text" name="text" minlength="1" required />
+				<button type="submit" style="color: green">Поиск</button>
+			</form>
+		</div>
+	</div>
+	<br/>
+	<h1 align='center' style="width: 100%">{{ header }}</h1>
+	{% if listObjects %}
+		<h2 align='center'>Количество товаров в списке: {{ lenObjects }}, цены от {{ min.cost }} до {{ max_cost }}
+		</h2>
+		<table border='1' style="background-color: #FFFFFF; width: 90%; margin: auto"><tr><td>№</td><td>Цена</td><td>Изображение</td><td>Название и описание</td><td>Магазин</td></tr>
+		{% for obj in listObjects %}
+			<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ obj.cost }}</td>
+			<td><img width='75' src="{{ obj.img }}"></img></td>
+			<td><h3><a href="{{ obj.link }}">{{ obj.name }}</a></h3><small>{{ obj.desc }}</small></td>
+			<td>{{ obj.market }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% endif %}
+	
+	{% if dictCheaps %}
+		{% for key, value in dictCheaps.items %}
+		<h2 align="center"><a href="/{{ key }}/">{{ value.0 }}</a></h2>
+			<table border='1' style="background-color: #FFFFFF; width: 90%; margin: auto"><tr><td>№</td><td>Цена</td><td>Изображение</td><td>Название и описание</td><td>Магазин</td></tr>
+			{% for obj in value.1 %}
+				<tr>
+				<td>{{ forloop.counter }}</td>
+				<td>{{ obj.cost }}</td>
+				<td><img width='75' src="{{ obj.img }}"></img></td>
+				<td><h3><a href="{{ obj.link }}">{{ obj.name }}</a></h3><small>{{ obj.desc }}</small></td>
+				<td>{{ obj.market }}</td>
+				</tr>
+			{% endfor %}
+			</table>
+			<hr style="width: 80%;"/>
+			<br/>
+		{% endfor %}
+	{% endif %}
+	
+	{% if listFound %}
+		<h2 align='center'>Найдено: {{ lenObjects }}</h2>
+		<table border='1' style="background-color: #FFFFFF; width: 90%; margin: auto"><tr><td>№</td><td>Цена</td><td>Изображение</td><td>Название и описание</td><td>Магазин</td></tr>
+		{% for obj in listFound %}
+			<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ obj.cost }}</td>
+			<td><img width='75' src="{{ obj.img }}"></img></td>
+			<td><h3><a href="{{ obj.link }}">{{ obj.name }}</a></h3><small>{{ obj.desc }}</small></td>
+			<td>{{ obj.market }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% endif %}
+	
+</div>
+<hr/>
+<div style="width: 100%; padding-top: 10px; padding-bottom: 10px; text-align: center; background-color: #C0C0C0">Copyright © 2018 <a href="mailto:byurrer@mail.ru">Byurrer</a><p>Вся информация взята из открытых источников и обновляется ежедневно</p></div>
+</body>
+</html>
